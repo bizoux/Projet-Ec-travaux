@@ -139,7 +139,7 @@ import db from "@/db"   // ✅ ton Dexie
 import { useRouter,useRoute } from 'vue-router'
 import Swal from 'sweetalert2'
 import profil from '@/assets/user.png'
-import logo from '@/assets/LogoEcTravaux.jpg'
+import logo from '@/assets/LogoEcTravau.jpg'
 
 
 const router = useRouter()
