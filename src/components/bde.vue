@@ -259,25 +259,13 @@
 </form> 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
             </td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-          </tr>
+
+</tr>
 
           <!-- Sous-total -->
           <tr class="table-secondary">
@@ -482,6 +470,13 @@ export default {
     },
 
     async ajouterDesignation() {
+
+      const existeDesignation = await db.designation.where({ Designation: this.designation }).first();
+      if (existeDesignation) { 
+        alert("Cette désignation existe déjà !"); 
+        return; 
+      }
+
       await db.designation.add({ Designation: this.designation, Description: this.description });
       await this.ListeDesignation();
       this.DesignationModale = false;
@@ -490,11 +485,19 @@ export default {
     },
 
     async ajouterTravaux() {
+
+      const existeTravaux = await db.Travaux.where({ travaux: this.travaux }).first();
+      if (existeTravaux) { 
+        alert("Cette travail existe déjà !"); 
+        return; 
+      }
+
       await db.Travaux.add({ travaux: this.travaux });
       await this.ListeTravaux();
       this.toastMessage = "Ajout travail avec succès !";
       setTimeout(() => this.toastMessage = '', 2000);
       this.afficherModale=false;
+    
     },
 
     async ajouterBde(indexTravaux, nomTravaux) {

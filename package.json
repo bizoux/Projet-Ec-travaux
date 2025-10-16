@@ -19,6 +19,7 @@
     "convertir-nombre-lettre": "^1.0.2",
     "date-fns": "^2.30.0",
     "dexie": "^4.2.0",
+    "gsap": "^3.13.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.4",

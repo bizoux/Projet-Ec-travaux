@@ -192,7 +192,7 @@
         <font-awesome-icon icon="plus-circle" style="font-size: 20;"/>
         <span>Nouveau Sdp</span>
     </button>
-    </div><br>
+    </div>
 
 
      <!-- TABLEAU SDP DESIGNATION -->
@@ -200,16 +200,24 @@
 
 
 
-      <div class="d-flex justify-content-between" style="font-family: 'MaRoboto',sans-serif;">
+      <div class="d-flex justify-content-between align-items-center mb-4" style="font-family: 'MaRoboto',sans-serif;">
         
         <h4 class="fw-bold text-primary">Sous Détail de Prix N° {{ CodeBdeSelectionner }}</h4>
         <div>
-          <h3 style="font-weight: 700;">
+          <h3 style="float: right;font-weight: 700;">
             K1 = {{ formatCoefficient(selectedTache.coefficientK) }}
           </h3>
         </div>
 
       </div>
+
+
+
+
+      <!-- <h3>Sous Détail de Prix N° {{ CodeBdeSelectionner }}</h3> -->
+      <!-- <h3 style="float: right;font-weight: 700;">
+        K1 = {{ formatCoefficient(selectedTache.coefficientK) }}
+      </h3> -->
 
 
     </div>

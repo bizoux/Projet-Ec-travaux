@@ -14,7 +14,7 @@ db.version(15).stores({
 
   materiel: 'Code, Materiels, Unite, Prix, Observation',
   Mainoeuvre : '++CodeMainOeuvre,nomCategorie,salaireBase,heureSupp,totalPartiel,chargeSalariales,pmjFinal',
-  Materiaux : 'id,Categorie,Type,Materiaux,Unites,Pu,CoutTrans,PrixChantier',
+  Materiaux : '++id,Categorie,Type,Materiaux,Unites,Pu,CoutTrans,PrixChantier',
   taches: '++idTache, idDevis, Num, unite, quantiteR, rendementJ, dureeJ, coefficientK, terminee',     
   tache_main_oeuvre: '++idTacheM, idTache, CodeMainOeuvre, qteU, uniteJ, qteTotale, Pu',
   tache_materiel: '++idTacheMateriel, idTache, Code, qteU, uniteJ, qteTotale, Pu',

@@ -445,7 +445,15 @@ console.error("Erreur lors de la suppression :", error);
 
     onMounted(async () => {
       await loadItems();
-      if (navigator.onLine) await syncToSupabase();
+      if (navigator.onLine){
+
+        // récupérer les données Supabase dans Dexie
+        await syncFromSupabase(); 
+
+        // pousser les données Dexie vers Supabase
+        await syncToSupabase();
+
+      }
     });
 
     return {
