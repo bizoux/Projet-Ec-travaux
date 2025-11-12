@@ -1,0 +1,93 @@
+{
+  "projet": "Maçonnerie de brique - Mur porteur",
+  "description": "Construction d’un mur porteur en briques rouges pleines pour un bâtiment résidentiel.",
+  "type_travaux": "Maçonnerie de brique",
+  "localisation": "Chantier Antananarivo - Lot A3",
+  "superficie": 25,
+  "unite": "m²",
+  "materiaux": [
+    {
+      "nom": "Brique rouge pleine",
+      "quantite": 1250,
+      "unite": "pièces",
+      "prix_unitaire": 800,
+      "fournisseur": "Briques Mada"
+    },
+    {
+      "nom": "Mortier (ciment + sable + eau)",
+      "quantite": 0.2,
+      "unite": "m³/m²",
+      "prix_unitaire": 150000,
+      "composition": {
+        "ciment": "1 volume",
+        "sable": "3 volumes",
+        "eau": "0.5 volume"
+      }
+    },
+    {
+      "nom": "Fer à béton (chaînage)",
+      "quantite": 25,
+      "unite": "m",
+      "diametre": "Ø8 mm",
+      "prix_unitaire": 4500
+    }
+  ],
+  "outils": [
+    "Truelle",
+    "Fil à plomb",
+    "Niveau à bulle",
+    "Échafaudage",
+    "Brouette",
+    "Seau de maçon",
+    "Marteau de maçon"
+  ],
+  "etapes_execution": [
+    {
+      "etape": 1,
+      "titre": "Préparation du chantier",
+      "description": "Nettoyage, mise à niveau et traçage des fondations."
+    },
+    {
+      "etape": 2,
+      "titre": "Montage du premier rang",
+      "description": "Pose du mortier et alignement des premières briques."
+    },
+    {
+      "etape": 3,
+      "titre": "Élévation du mur",
+      "description": "Montage progressif en respectant le décalage des joints verticaux (appareil en croix)."
+    },
+    {
+      "etape": 4,
+      "titre": "Réalisation du chaînage",
+      "description": "Pose du fer à béton et coulage du béton de chaînage supérieur."
+    },
+    {
+      "etape": 5,
+      "titre": "Finition",
+      "description": "Rejointoiement, nettoyage et vérification de la verticalité."
+    }
+  ],
+  "temps_execution": {
+    "duree_estimee": 3,
+    "unite": "jours",
+    "nombre_ouvriers": 3
+  },
+  "cout_estime": {
+    "materiaux": 2000000,
+    "main_oeuvre": 600000,
+    "total": 2600000,
+    "devise": "Ar"
+  },
+  "securite": [
+    "Port du casque et gants de sécurité",
+    "Utilisation d’échafaudage stable",
+    "Respect des distances de sécurité lors de la coupe des briques",
+    "Port de lunettes de protection"
+  ],
+  "controle_qualite": [
+    "Vérification de la planéité et de l’alignement",
+    "Respect de l’épaisseur des joints (10-12 mm)",
+    "Test de solidité après séchage du mortier"
+  ]
+}

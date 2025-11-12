@@ -1,6 +1,7 @@
 import { supabase } from '@/supabaseClient';
 import db from '@/db';
 
+
 export async function syncToSupabase() {
   try {
     const b = await db.bde.toArray();

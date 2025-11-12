@@ -1,246 +1,232 @@
 <template>
-
-  <!-- Toast notification -->
-  <div v-if="toastMessage" class="toast-notification">
-    {{ toastMessage }}
-  </div>
-
   <div class="container my-4">
 
-    <div class="card shadow-lg border-0 rounded-4 p-4 mb-4 bg-light bg-opacity-75">
-      <!-- Header avec boutons -->
-      <div class="d-flex justify-content-between align-items-center mb-4" style="font-family: 'MaRaleway',sans-serif;">
-        <h4 class="fw-bold text-primary mb-0">Gestion de Bde</h4>
-        <div class="d-flex gap-2">
-          <button 
-            class="btn btn-primary d-flex align-items-center gap-2 rounded-pill px-3 modern-btn"
-            @click="modaleNouveauTravaux"
-          >
-            <font-awesome-icon icon="hammer" style="font-size: 18;"/>
-            <span>Nouveau</span>
-          </button>
-
-          <button 
-            class="btn btn-outline-primary d-flex align-items-center gap-2 rounded-pill px-3 modern-btn"
-            @click="modaleBde"
-          >
-            <font-awesome-icon icon="plus-circle" style="font-size: 18;"/>
-            <span>Désignation</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Sélection Projet -->
-
-      <div v-if="ProjetList.length > 0">
-        <label for="selectProjet" class="form-label fw-semibold text-secondary">Projet</label>
-        <select
-          id="selectProjet"
-          v-model="selectedDevisId"
-          class="form-select form-select-lg shadow-sm rounded-pill border-0 focus-ring"
-          @change="filtrerBdeParDevis"
-        >
-          <option disabled value="" selected hidden>-- Sélectionner un projet --</option>
-          <option v-for="devis in ProjetList" :key="devis.idDevis" :value="devis.idDevis">
-            {{ devis.nomProjet }}
-          </option>
-        </select>
-      </div>
+    <!-- Toast notification -->
+    <div v-if="toastMessage" class="toast-notification">
+      {{ toastMessage }}
     </div>
 
-    <!-- Formulaire ajout BDE -->
-
-    <form @submit.prevent="ajouterBdeNouveau()">
-      <div class="bloc-modale" v-if="afficherFormulaireBde">
-        <div class="overlay" @click="AffichageFormulaireBde()"></div>
-        <div class="modale card">
-          <div class="btn-modale btn btn-danger" @click="AffichageFormulaireBde()">X</div>
-          <center><h1 class="styleTexte">Ajouter Bde</h1></center>
-
-          <!-- Sélection Projet -->
-          <div class="row">
-            <div class="col-md-12 mb-3">
-              <label class="form-label">Projet <b style="color: rgb(255, 0, 0);">*</b></label>
-              <select v-model="selectedProjetId" class="form-select" required>
-                <option disabled value="">-- Choisir Projet --</option>
-                <option v-for="proj in ProjetList" :key="proj.idDevis" :value="proj.idDevis">
-                  {{ proj.nomProjet }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Sélection Travaux -->
-          <div class="row">
-            <div class="col-md-12 mb-3">
-              <label class="form-label">Travaux <b style="color: rgb(255, 0, 0);">*</b></label>
-              <select v-model="selectedTraveauId" class="form-select" required>
-                <option disabled value="">-- Choisir travaux --</option>
-                <option v-for="trav in TravauxList" :key="trav.CodeTrav" :value="trav.CodeTrav">
-                  {{ trav.travaux }}
-                </option>
-              </select> 
-            </div>      
-          </div>
-
-          <!-- Sélection Désignation -->
-          <div class="row mb-3">
-            <div class="col-md-12">
-              <label class="form-label">Désignation <b style="color: rgb(255, 0, 0);">*</b></label>
-              <select v-model="selectedDesignationId" class="form-select" required>
-                <option disabled value="">-- Choisir designation --</option>
-                <option v-for="des in DesignationList" :key="des.CodeDes" :value="des.CodeDes">
-                  {{ des.Designation }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Unité et Quantité -->
-          <div class="row mb-4">
-            <div class="col-md-6">
-              <label class="form-label">Unité <b style="color: rgb(255, 0, 0);">*</b></label>
-              <input v-model="Unite" type="text" class="form-control" placeholder="Unité" required />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Quantité <b style="color: rgb(255, 0, 0);">*</b></label>
-              <input v-model="Quantite" class="form-control" placeholder="Quantité" required />
-            </div>
-          </div> 
-
-          <button type="submit" class="btn btn-primary">Ajouter</button>
-        </div>
+    <div class="container card border-0 shadow mt-4" style="width: 450px;background:linear-gradient(200deg,#cfe4e465,#c6d2df,#a4c3c79a);">
+      <div class="card-body text-center">
+        <h4 class="mb-3 text-primary border-0 fw-bold" style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">
+          {{ nomProjet }}
+        </h4>
       </div>
-    </form>
-
-    <!-- Titre Projet -->
-
-    <div class="mb-4">
-      <center><h2 v-if="selectedDevisNom">{{ selectedDevisNom }}</h2></center>
-    </div>
-
+    </div><br>
     <!-- Tableau BDE -->
-    <table class="table table-striped table-bordered table-hover sdp-table" v-if="bdeAvecTravaux.length">
+    <table class="table table-striped table-bordered table-hover sdp-table table-sm">
       <thead class="table-dark">
         <tr>
           <th>N°</th>
           <th>DESIGNATION</th>
-          <th>U</th>
+          <th>UNITE</th>
           <th>QUANTITE</th>
           <th>PRIX UNITAIRE</th>
           <th>MONTANT</th>
+          <th>ACTION</th>
         </tr>
       </thead>
 
       <tbody>
-        <template v-for="(bde, numRomain) in bdeAvecTravaux" :key="bde.nomTravaux">
-          <!-- Titre de la catégorie -->
+        <!-- Ligne ajout mivantana -->
+        <tr class="table-primary">
+          <td></td>
+          <td>
+            
+<!-- Lot -->
+
+<multiselect
+v-model="nouveauLotId"
+:options="LotList"
+label="lot"
+track-by="CodeLot"
+placeholder="Choisir lot"
+:multiple="false"
+:close-on-select="true"
+:clear-on-select="true"
+:preserve-search="true"
+class="mb-1"
+>
+<template #noResult>
+  <div style="padding: 5px; color: red;">Aucun résultat trouvé.</div>
+  <hr>
+  
+  <button class="btn btn-sm btn-primary" type="button" @click="modaleNouveauLot" style="color: white;">Nouveau lot</button>
+</template>
+</multiselect>
+
+<!-- Travau -->
+
+<multiselect
+v-model="nouveauTravauId"
+:options="TravauxList"
+label="nomTravau"
+track-by="CodeTrav"
+placeholder="Choisir travaux"
+:multiple="false"
+:close-on-select="true"
+:clear-on-select="true"
+:preserve-search="true"
+>
+<template #noResult>
+  <div style="padding: 5px; color: red;">Aucun résultat trouvé.</div>
+  <hr>
+  
+  <button class="btn btn-sm btn-primary" type="button" @click="modaleNouveauTravau" style="color: white;">Nouveau travau</button>
+</template>
+</multiselect>
+
+<!-- Input pour modifier le nom si un travail est sélectionné -->
+<div v-if="travauEnEdition" class="mt-2 d-flex align-items-center gap-2">
+  <input
+    v-model="travauTempNom"
+    type="text"
+    class="form-control form-control-sm"
+    placeholder="Modifier le nom du travail"
+  />
+  <button class="btn btn-sm btn-success" @click="confirmerModificationTravau">Confirmer</button>
+  <button class="btn btn-sm btn-danger" @click="Annuler">Annuler</button>
+</div>
+
+
+
+          </td>
+          <td><input v-model="nouvelleUnite" type="text" class="form-control form-control-sm" placeholder="Unité"/></td>
+          <td><input v-model="nouvelleQuantite" type="number" class="form-control form-control-sm" placeholder="Qté"/></td>
+          <td>0</td>
+          <td>0</td>
+          <td>
+            <center><button class="btn btn-sm btn-primary" @click="ajouterBde">Ajouter</button></center>
+          </td>
+        </tr>
+
+        <!-- Affichage BDE existants -->
+        <template v-for="(bde, numRomain) in bdeAvecTravaux" :key="bde.nomLot">
           <tr class="table-primary">
             <td></td>
-            <td>
-              <strong>{{ toRoman(numRomain + 1) }} - {{ bde.nomTravaux }}</strong>
-              <button class="btn btn-sm btn-outline-primary" style="float: right;" @click="RecupererTravaux(bde.idTravaux)">
-                <font-awesome-icon icon="pen" /> Modifier
-              </button>
+            <td><strong>{{ toRoman(numRomain + 1) }} - {{ bde.nomLot }}</strong>
+            <button class="btn btn-sm btn-outline-primary" style="float: right;" @click="RecupererLot(bde.idLot)">
+              <font-awesome-icon icon="pen" /> Modifier
+            </button>
+            
             </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            
+            <td></td><td></td><td></td><td></td><td></td>
           </tr>
 
-          <!-- Détails (désignations) -->
-          <tr v-for="(des, numeroDes) in bde.designations" :key="des.CodeDes">
-            <td class="text-center fw-bold" style="color:rgb(65, 80, 180)">{{ numRomain + 0 }}-{{ numeroDes + 1 }}</td>
+          <tr v-for="(trav, numeroTrav) in bde.travaux" :key="trav.CodeTrav">
+            <td class="text-center fw-bold" style="color:rgb(65, 80, 180)">{{ numRomain + 0 }}-{{ numeroTrav + 1 }}</td>
             <td class="fw-bold" style="color:rgb(65, 80, 180)">
-              {{ des.nomDesignation }}<br>
-              <small class="text-muted">concerne : {{ des.nomDescription }}</small>
+              {{ trav.nomTravau }}<br>
+              <small class="text-muted">concerne : {{ trav.nomDescription }}</small>
             </td>
-            <td>{{ des.Unite }}</td>
-            <td>{{ formatQte(des.Quantite) }}</td>
-            <td>{{ formatPrice(des.Pu) }}</td>
-            <td>{{ formatQte(des.Quantite * des.Pu) }}</td>
+            <td>{{ trav.Unite }}</td>
+            <td>{{ formatQte(trav.Quantite) }}</td>
+            <td>{{ formatPrice(trav.Pu) }}</td>
+            <td>{{ formatQte(trav.Quantite * trav.Pu) }}</td>
+            <td></td>
           </tr>
 
-          <!-- Multiselect ajout désignation -->
-          <tr>
+          <tr class="table-danger">
             <td></td>
-            <td>
-              <multiselect
-                v-model="selectedDesignationParTravaux[bde.idTravaux]"
-                :options="DesignationList"
-                placeholder="Sélectionner désignation"
-                :searchable="true"
-                :close-on-select="true"
-                label="Designation"
-                track-by="CodeDes"
-                @select="modaleDesignation($event.Designation,bde.nomTravaux,numRomain)"
-              >
-                <template #noResult>
-                  <div style="padding: 5px; color: red;">Aucun résultat trouvé.</div>
-                  <hr>
-                  
-                  <button class="btn btn-sm btn-primary" type="button" @click="modaleNouvelleDesignation" style="color: white;">Créer cette désignation</button>
-                </template>
-              </multiselect>
+            <td class="text-end"><strong>Sous total</strong></td>
+            <td></td><td></td><td></td>
+            <td><strong>{{ formatQte(Montant(bde.travaux)) }} Ar</strong></td>
+            <td></td>
+          </tr>
+        </template>
+
+        <!-- Total général -->
+        <tr class="table-dark">
+          <td></td>
+          <td class="text-end"><strong>Total général</strong></td>
+          <td></td><td></td><td></td>
+          <td><strong>{{ formatQte(totalGeneral()) }} Ar</strong></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
 
 
-<!-- MODALE AJOUT DESIGNATION SELECTIONNER -->
+<!-- MODALE MODIF LOT -->
 
-<form @submit.prevent="ajouterBde(numR,TravauxSelectionner)">
-<div class="bloc-modale" v-if="afficherModaleDesignation">
+<div class="bloc-modale" v-if="modalModifLot">
 
-          <div class="overlay" v-on:click="AffichageDesignationBde()"></div>
+  <div class="overlay" v-on:click="AffichageModifTrav()"></div>
+  
+  <div class="modale card">
 
-          <div class="modale card">
+      <div class="btn-modale btn btn-danger" v-on:click="AffichageModifTrav()">X</div>
+      <h1 class="styleTexte">Modifier lot</h1><br>
+      
+      
+      <div class="Aucentre">
 
-              <div class="btn-modale btn btn-danger" v-on:click="AffichageDesignationBde()">X</div>
-              <br><center><h1 class="styleTexte">Ajouter Bde</h1></center><br>
-              <h5 style="background: linear-gradient(100deg,#08b4b4ee,#557497,#00bbd49a);text-align: center;font-weight: 800;color:white;padding:10px;">{{ DesignationSelectionner }}</h5>
-    
+        <label for="" class="form-label">Lot</label>
+        <input v-model="modifLot" type="text" class="form-control" required />
+        <br>
+        
+      
+      </div>
+      
+      <button class="btn btn-primary" v-on:click="ModifierLot()">Modifier</button>
+      
+      
 
-
-          <div class="mb-3">
-            <label for="" class="form-label">Unité</label>
-            <input class="form-control" v-model="UniteBde" placeholder="unite" required/>
-          </div>
-
-
-          <div class="mb-3">
-            <label for="" class="form-label">Quantité</label>
-            <input class="form-control" v-model="QuantiteBde" placeholder="qte" required/>
-          </div>
-
-          <!-- <button type="submit" class="btn btn-primary">Ajouter</button> -->
-          <button class="btn btn-sm btn-primary mt-2">
-            Ajouter
-          </button>
-          
-          </div>
+  </div>
 
 </div>
 
-</form>
+<!-- MODALE AJOUT NOUVEAU LOT -->
 
-<!-- MODALE AJOUT NOUVEAU DESIGNATION -->
+<form @submit.prevent="ajouterLot()">
+    
+  <div class="bloc-modale" v-if="LotModale">
 
-<form @submit.prevent="ajouterDesignation()">
-
-
-     
-  <div class="bloc-modale" v-if="DesignationModale">
-
-    <div class="overlay" v-on:click="AffichageModaleDesignation()"></div>
+    <div class="overlay" v-on:click="AffichageModaleLot()"></div>
     
     <div class="modale card">
 
-        <div class="btn-modale btn btn-danger" v-on:click="AffichageModaleDesignation()">X</div>
-        <h1 class="styleTexte">Ajouter une nouvelle désignation</h1><br>
+        <div class="btn-modale btn btn-danger" v-on:click="AffichageModaleLot()">X</div>
+        <h1 class="styleTexte">Ajouter un nouveau Lot</h1><br>
         
         <div class="Aucentre">
 
-          <label for="" class="form-label">Designation <b style="color: rgb(255, 0, 0);">*</b></label>
-          <input v-model="designation" type="text" class="form-control" placeholder="Designation" required />
+          <label for="" class="form-label">Lot <b style="color: rgb(255, 0, 0);">*</b></label>
+          <input v-model="nomLot" type="text" class="form-control" placeholder="Lot" required />
+          <br>
+        </div>
+        
+        <button class="btn btn-primary">Ajouter</button>
+        
+
+    </div>
+  
+</div>
+
+
+</form>
+
+
+<!-- MODALE AJOUT NOUVEAU TRAVAUX -->
+
+<form @submit.prevent="ajouterTravau()">
+
+
+     
+  <div class="bloc-modale" v-if="TravauModale">
+
+    <div class="overlay" v-on:click="AffichageModaleTravau()"></div>
+    
+    <div class="modale card">
+
+        <div class="btn-modale btn btn-danger" v-on:click="AffichageModaleTravau()">X</div>
+        <h1 class="styleTexte">Ajouter un nouveau Travau</h1><br>
+        
+        <div class="Aucentre">
+
+          <label for="" class="form-label">Travau <b style="color: rgb(255, 0, 0);">*</b></label>
+          <input v-model="nomTravau" type="text" class="form-control" placeholder="Travau" required />
           <br>
           
           <label for="" class="form-label">Description <b style="color: rgb(255, 0, 0);">*</b></label>
@@ -259,456 +245,308 @@
 </form> 
 
 
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
 
-</tr>
-
-          <!-- Sous-total -->
-          <tr class="table-secondary">
-            <td></td>
-            <td class="text-end"><strong>Sous total</strong></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><strong>{{ formatQte(Montant(bde.designations)) }} Ar</strong></td>
-          </tr>
-        </template>
-
-        <!-- Total général -->
-        <tr class="table-dark">
-          <td></td>
-          <td class="text-end"><strong>Total général</strong></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><strong>{{ formatQte(totalGeneral()) }} Ar</strong></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div v-else class="styleN">
-      Aucun résultat
-    </div>
-
-
-
-    <!-- MODALE AJOUT NOUVEAU TRAVAIL -->
-
-<form @submit.prevent="ajouterTravaux()">
-
-
-<div class="bloc-modale" v-if="afficherModale">
-
-     <div class="overlay" v-on:click="Affichage()"></div>
-     
-     <div class="modale card">
-
-         <div class="btn-modale btn btn-danger" v-on:click="Affichage()">X</div>
-         <h1 class="styleTexte">Nouveau travail</h1><br>
-         
-         <div class="mb-3">
-
-           <label for="" class="form-label">Travail</label>
-           <input v-model="travaux" class="form-control" placeholder="travaux" required/>
-           <br>
-
-         </div>
-         
-         <button class="btn btn-primary">Ajouter</button>
-         
-
-     </div>
-   
- </div>
-
-</form>
-
-
-
-    <!-- Bouton PDF -->
-
-     <div class="text-end">
-      <button v-if="bdeAvecTravaux.length" class="btn btn-outline-danger rounded-pill" @click="generatePDF">
-        <font-awesome-icon icon="file-pdf" /> Télécharger PDF
-      </button>
-     </div>
-
-
-
-</div>
+  </div>
 </template>
 
 <script>
 import multiselect from 'vue-multiselect';
-import 'vue-multiselect/dist/vue-multiselect.min.css';
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import 'vue-multiselect/dist/vue-multiselect.min.css';  
 import db from '@/db';
-import logo from "@/assets/LogoEcTravaux.png"; // <== IMPORT DU LOGO
 
 export default {
   components: { multiselect },
   data() {
     return {
-      chargement:true,
-      afficherModaleDesignation:false,
-      DesignationModale:false,
-      afficherModale:false,
-      afficherFormulaireBde:false,
-      modalModifTrav:false,
-      selectedDevisId: '',
-      selectedDevisNom: '',
-      TravauxSelectionner:'',
-      UniteBde:'',
-      QuantiteBde:'',
-      numR:'',
-      toastMessage: '',
-      travaux: '',
-      modifNomTrav: "",
-      DesignationSelectionner:"",
-      idProjet:'',
-      selectedProjetId: '',
-      selectedTraveauId: '',
-      Unite:'',
-      Quantite:'',
-      selectedDesignationId: '',
-      selectedDesignationParTravaux: [],
-      ProjetList:[],
+      travauTempNom: '',
+      nomLot:'',
+      nomTravau:'',
+      idProjet:this.$route.query.idProj,
+      modalModifLot:false,
+      TravauModale:false,
+      LotModale:false,
+      LotList: [],
       TravauxList: [],
-      DesignationList:[],
-      bdeAvecTravaux:[],
-      designation:'',
-      description:''
+      bdeAvecTravaux: [],
+      toastMessage: '',
+
+      // Ligne ajout inline
+      nouveauLotId: '',
+      nouveauTravauId: '',
+      nouvelleUnite: '',
+      nouvelleQuantite: null,
+      travauEnEdition: false,
+
+      nomProjet:''
     };
   },
+  watch: {
+  nouveauTravauId(newVal) {
+    if (newVal) {
+      this.travauTempNom = newVal.nomTravau; 
+      this.travauEnEdition = true; // Affiche l’input
+    } else {
+      this.travauEnEdition = false; // Cache l’input si aucun travail sélectionné
+    }
+  }
+},
   async mounted() {
-    await this.ListeProjets();
-    await this.ListeTravaux();
+    
+    await this.ListeLot();
     await this.ListeDesignation();
+    await this.ListeBde();
+
+  },
+  created() {
+    // récupérer le paramètre depuis l'URL
+    this.idProjet = Number(this.$route.query.idProj)
+
+    if (this.idProjet) {
+      //  récupérer les infos depuis Dexie
+      db.Projet.get(this.idProjet).then(data => {
+
+        this.nomProjet = data.TacheEffect;
+
+      })
+    }
   },
   methods: {
 
-    // Filtrer BDE par projet
-    async filtrerBdeParDevis() {
-      const devis = this.ProjetList.find(d => d.idDevis === this.selectedDevisId);
-      this.selectedDevisNom = devis ? devis.nomProjet : "";
+    Annuler(){
+      this.travauEnEdition = false;
+    },
 
-      const BdeList = await db.bde.where('idDevis').equals(this.selectedDevisId).toArray();
-      const resultat = [];
 
-      for (const bde of BdeList) {
-        const trav = await db.Travaux.get(bde.CodeTrav);
-        const des = await db.designation.get(bde.CodeDes);
+    confirmerModificationTravau() {
+  if (!this.nouveauTravauId || !this.travauTempNom.trim()) {
+    alert("Veuillez saisir un nom valide !");
+    return;
+  }
 
-        let existingTrav = resultat.find(item => item.nomTravaux === trav.travaux);
-        if (!existingTrav) {
-          existingTrav = { nomTravaux: trav.travaux, idTravaux: trav.CodeTrav, designations: [] };
-          resultat.push(existingTrav);
-        }
+  const codeTrav = this.nouveauTravauId.CodeTrav;
 
-        existingTrav.designations.push({
-          CodeDes: des.CodeDes,
-          nomDesignation: des.Designation,
-          nomDescription: des.Description,
-          Unite: bde.Unite,
-          Quantite: bde.Quantite,
-          Pu: bde.Pu,
-          Montant: bde.Montant,
-          codeBde: bde.codeBde
-        });
+  // Mise à jour dans Dexie.js
+  db.Travaux.update(codeTrav, { nomTravau: this.travauTempNom })
+    .then(updated => {
+      if (updated) {
+        // Mise à jour locale
+        this.nouveauTravauId.nomTravau = this.travauTempNom;
+        const index = this.TravauxList.findIndex(t => t.CodeTrav === codeTrav);
+        if (index !== -1) this.TravauxList[index].nomTravau = this.travauTempNom;
+
+        this.toastMessage = "Nom du travail modifié avec succès dans la base !";
+        setTimeout(() => this.toastMessage = '', 2000);
+        // Cacher l’input après confirmation
+        this.travauEnEdition = false;
+      } else {
+        alert("Impossible de mettre à jour le travail dans Dexie !");
       }
-
-      this.bdeAvecTravaux = resultat;
-      this.selectedDesignationParTravaux = this.bdeAvecTravaux.map(() => null);
-    },
-
-    AffichageDesignationBde() { this.afficherModaleDesignation = !this.afficherModaleDesignation; },
-    AffichageModifTrav() { this.modalModifTrav = !this.modalModifTrav; },
-    AffichageFormulaireBde() { this.afficherFormulaireBde = !this.afficherFormulaireBde; },
-
-    totalGeneral() {
-      return this.bdeAvecTravaux.reduce((total, bde) => total + this.Montant(bde.designations), 0);
-    },
-
-    modaleDesignation(nomDesignation,nomTravaux,numRomain) {
-      // if (!item) return;
-      this.afficherModaleDesignation = true;
-      this.TravauxSelectionner = nomTravaux;
-      this.DesignationSelectionner = nomDesignation;
-      this.numR = numRomain;
+    });
+},
 
 
-    },
+async ajouterLot() {
 
-    modaleBde() { this.afficherFormulaireBde = true; },
-    modaleNouveauTravaux() { this.afficherModale = true; },
-    modaleNouvelleDesignation() { this.DesignationModale = true; },
+const existeLot = await db.Lot.where({ lot: this.nomLot }).first();
+if (existeLot) { 
+  alert("Cette lot existe déjà !"); 
+  return; 
+}
 
-    async RecupererTravaux(idTravaux) {
-      const trav = await db.Travaux.get(idTravaux);
-      if (trav) {
-        this.idTravauxEnCours = trav.CodeTrav;
-        this.modifNomTrav = trav.travaux;
-        this.modalModifTrav = true;
+await db.Lot.add({ lot: this.nomLot });
+await this.ListeLot();
+this.toastMessage = "Ajout lot avec succès !";
+setTimeout(() => this.toastMessage = '', 2000);
+this.LotModale=false;
+
+},
+
+async notifExisteBde(){
+          
+          this.$swal({
+          icon:'error',
+          title:'Cette bde existe déja',
+          text:"Choisir un autre",
+          timer:1900,
+          showConfirmButton:false
+})
+          
+},
+async notifRemplirChamps(){
+          
+          this.$swal({
+          icon:'info',
+          title:'Champs obligatoire',
+          text:"Veuillez remplir tous les champs",
+          timer:1900,
+          showConfirmButton:false
+})
+          
+},
+
+async ajouterTravau() {
+
+const existeTravau = await db.Travaux.where({ nomTravau: this.nomTravau }).first();
+if (existeTravau) { 
+  alert("Cette désignation existe déjà !"); 
+  return; 
+}
+
+await db.Travaux.add({ nomTravau: this.nomTravau, Description: this.description });
+await this.ListeDesignation();
+this.TravauModale = false;
+this.toastMessage = "Ajout nouvelle désignation avec succès !";
+setTimeout(() => this.toastMessage = '', 2000);
+},
+
+    // MODIFICATION LOT
+
+    async RecupererLot(codeLot) {
+      const lot = await db.Lot.get(codeLot);
+      if (lot) {
+        this.idLotEnCours = lot.CodeLot;
+        this.modifLot = lot.lot;
+        this.modalModifLot = true;
       }
     },
+    AffichageModifTrav() { 
 
-    async ModifierTravaux() {
-      if (!this.modifNomTrav.trim()) { alert("Veuillez saisir un nom valide !"); return; }
-      await db.Travaux.update(this.idTravauxEnCours, { travaux: this.modifNomTrav });
-      this.modalModifTrav = false;
-      this.idTravauxEnCours = null;
-      this.modifNomTrav = "";
-      await this.ListeTravaux();
+      this.modalModifLot = !this.modalModifLot; 
+    
+    },
+    AffichageModaleLot() { 
+    
+      this.LotModale = !this.LotModale; 
+    
+    },
+    AffichageModaleTravau() { 
+    
+      this.TravauModale = !this.TravauModale; 
+    
+    },
+
+    async ModifierLot() {
+      if (!this.modifLot.trim()) { alert("Veuillez saisir un nom valide !"); return; }
+      await db.Lot.update(this.idLotEnCours, { lot: this.modifLot });
+      this.modalModifLot = false;
+      this.idLotEnCours = null;
+      this.modifLot = "";
+      await this.ListeLot();
       await this.ListeBde();
       this.toastMessage = "Modification avec succès !";
       setTimeout(() => this.toastMessage = '', 2000);
     },
 
-    async ajouterDesignation() {
+    // FIN MODIFICATION LOT
 
-      const existeDesignation = await db.designation.where({ Designation: this.designation }).first();
-      if (existeDesignation) { 
-        alert("Cette désignation existe déjà !"); 
-        return; 
-      }
-
-      await db.designation.add({ Designation: this.designation, Description: this.description });
-      await this.ListeDesignation();
-      this.DesignationModale = false;
-      this.toastMessage = "Ajout nouvelle désignation avec succès !";
-      setTimeout(() => this.toastMessage = '', 2000);
+    modaleNouveauTravau() {
+      this.TravauModale = true; 
     },
 
-    async ajouterTravaux() {
+    modaleNouveauLot(){
+      this.LotModale = true;
+    },
 
-      const existeTravaux = await db.Travaux.where({ travaux: this.travaux }).first();
-      if (existeTravaux) { 
-        alert("Cette travail existe déjà !"); 
-        return; 
-      }
 
-      await db.Travaux.add({ travaux: this.travaux });
-      await this.ListeTravaux();
-      this.toastMessage = "Ajout travail avec succès !";
-      setTimeout(() => this.toastMessage = '', 2000);
-      this.afficherModale=false;
+
+    async ListeLot() { 
+      this.LotList = await db.Lot.toArray();
     
     },
-
-    async ajouterBde(indexTravaux, nomTravaux) {
-
-
-      const travail = this.TravauxList.find(t => t.travaux === nomTravaux);
-      const designation = this.selectedDesignationParTravaux[travail.CodeTrav];
-
-      if (!travail) return alert("Travaux non trouvé");
-
-      const existe = await db.bde.where({ CodeDes: designation.CodeDes }).first();
-      if (existe) { alert("Cette BDE existe déjà pour ce travail !"); return; }
-
-
-
-      const numRomain = indexTravaux;
-      const numeroDes = (await db.bde.where({ CodeTrav: travail.CodeTrav }).count()) + 1;
-      const codeBde = `${numRomain}-${numeroDes}`;
-
-
-      await db.bde.add({
-        idDevis: this.selectedDevisId,
-        CodeTrav: travail.CodeTrav,
-        CodeDes: designation.CodeDes,
-        Unite: this.UniteBde,
-        Quantite: Number(this.QuantiteBde),
-        Pu: 0,
-        Montant: 0,
-        codeBde
-      });
-
-      this.toastMessage = "Ajout BDE avec succès !";
-      setTimeout(() => this.toastMessage = '', 2000);
-
-      this.selectedDesignationParTravaux[indexTravaux] = null;
-      await this.filtrerBdeParDevis();
-      this.afficherModaleDesignation = false;
-
-
+    async ListeDesignation() {
+       this.TravauxList = await db.Travaux.toArray(); 
+      
     },
 
-    async ajouterBdeNouveau() {
-      if (!this.selectedProjetId || !this.selectedTraveauId || !this.selectedDesignationId) {
-        alert("Veuillez remplir tous les champs !"); return;
-      }
-      const travail = await db.Travaux.get(this.selectedTraveauId);
-      const designation = await db.designation.get(this.selectedDesignationId);
-      if (!travail || !designation) { alert("Travaux ou désignation introuvable !"); return; }
+    async ListeBde() {
+  // Maka ny BDE rehetra amin'ilay projet courant
+  const BdeList = await db.bde.where('idProj').equals(Number(this.idProjet)).toArray();
+  const resultat = [];
 
-      const existe = await db.bde.where({
-        idDevis: this.selectedProjetId,
-        CodeTrav: this.selectedTraveauId,
-        CodeDes: this.selectedDesignationId
-      }).first();
-      if (existe) { alert("Cette BDE existe déjà !"); return; }
+  for (const bde of BdeList) {
+    const lot = await db.Lot.get(bde.CodeLot);
+    const trav = await db.Travaux.get(bde.CodeTrav);
 
-      const numRomain = this.TravauxList.findIndex(t => t.CodeTrav === this.selectedTraveauId);
-      const numeroDes = (await db.bde.where({ CodeTrav: this.selectedTraveauId }).count()) + 1;
-      const codeBde = `${numRomain}-${numeroDes}`;
+    // Mitady raha efa misy ilay lot ao amin'ny resultat
+    let existingLot = resultat.find(item => item.nomLot === lot.lot);
+    if (!existingLot) {
+      existingLot = { 
+        nomLot: lot.lot,   // Anaran'ilay lot
+        idLot: lot.CodeLot,
+        travaux: []         // Travaux rehetra ao anatiny
+      };
+      resultat.push(existingLot);
+    }
 
-      await db.bde.add({
-        idDevis: this.selectedProjetId,
-        CodeTrav: this.selectedTraveauId,
-        CodeDes: this.selectedDesignationId,
-        Unite: this.Unite,
-        Quantite: Number(this.Quantite),
-        Pu: 0,
-        Montant: 0,
-        codeBde
-      });
-
-      await this.ListeBde();
-      this.afficherFormulaireBde = false;
-      this.toastMessage = "Ajout BDE avec succès !";
-      setTimeout(() => this.toastMessage = '', 2000);
-    },
-
-    // Formats
-    formatQte(val) { return val === null || val === undefined || isNaN(val) ? '0,00' : Number(val).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); },
-    formatPrice(val) {
-      let multiple = 10;
-      if (val >= 1000000) multiple = 10000;
-      else if (val >= 100000) multiple = 1000;
-      else if (val >= 10000) multiple = 100;
-
-      const arrondi = Math.round(val / multiple) * multiple;
-      return arrondi.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    },
-
-    Montant(designations) {
-      return designations.reduce((total, item) => total + item.Quantite * item.Pu, 0);
-    },
-
-
-  // GENERER PDF
-
-  generatePDF() {
-
-  const doc = new jsPDF("p", "mm", "a4");
-
-   // === LOGO ===
-
-  doc.addImage(logo, "PNG", 5, 1, 40, 30); // x, y, width, height
-
-  // --- Titre principal ---
-
-  doc.setFontSize(16);
-  doc.text(this.selectedDevisNom,105, 20, { align: "center" });
-
-  const body = [];
-
-  // --- Contenu du tableau ---
-  this.bdeAvecTravaux.forEach((bde, numRomain) => {
-    // Ligne catégorie (Travaux)
-    body.push([
-      { content: "", styles: { fillColor: [173, 216, 230] } },
-      { content: `${this.toRoman(numRomain + 1)} - ${bde.nomTravaux}`, colSpan: 5, styles: { fillColor: [173, 216, 230], fontStyle: "bold" } },
-      {}, {}, {}, {}
-    ]);
-
-    // Lignes désignations
-    bde.designations.forEach((des, numeroDes) => {
-      const qte = Number(des.Quantite) || 0;
-      const pu = Number(des.Pu) || 0;
-      const montant = qte * pu;
-
-      body.push([
-        `${numRomain + 0}-${numeroDes + 1}`,
-        `${des.nomDesignation}\n(concerne : ${des.nomDescription})`,
-        des.Unite,
-        this.formatQte(qte).replace(/\s/g, " "),
-        this.formatPrice(pu).replace(/\s/g, " "),
-        this.formatQte(montant).replace(/\s/g, " "),
-      ]);
+    // Ampiana travaux vaovao ao anatin'ilay lot efa misy
+    existingLot.travaux.push({
+      CodeTrav: trav.CodeTrav,
+      nomTravau: trav.nomTravau,
+      nomDescription: trav.Description,
+      Unite: bde.Unite,
+      Quantite: bde.Quantite,
+      Pu: bde.Pu,
+      Montant: bde.Montant
     });
+  }
 
-    // Ligne sous-total
-    const sousTotal = bde.designations.reduce((total, d) => total + (Number(d.Quantite) || 0) * (Number(d.Pu) || 0), 0);
-    body.push([
-      "",
-      { content: "Sous total", colSpan: 4, styles: { halign: "right", fillColor: [220, 220, 220], fontStyle: "bold" } },
-      `${this.formatQte(sousTotal).replace(/\s/g, " ")} Ar`
-    ]);
+  // Mise à jour de la variable d'affichage
+  this.bdeAvecTravaux = resultat;
+},
+
+
+    async ajouterBde() {
+
+  if (!this.nouveauLotId || !this.nouveauTravauId || !this.nouvelleUnite || !this.nouvelleQuantite) {
+    this.notifRemplirChamps();
+    return;
+  }
+
+  const codeLot = this.nouveauLotId.CodeLot;
+  const codeTrav = this.nouveauTravauId.CodeTrav;
+
+  const existe = await db.bde.where({
+    idProj: this.idProjet,
+    CodeLot: codeLot,
+    CodeTrav: codeTrav
+  }).first();
+  if (existe) {
+    this.notifExisteBde();
+    return;
+  }
+
+  const numeroTrav = (await db.bde.where({ CodeLot: codeLot }).count());
+  const codeBde = `${codeLot-1}-${numeroTrav+1}`;
+
+  await db.bde.add({
+    Num: codeBde,
+    idProj: Number(this.idProjet),
+    CodeLot: codeLot,
+    CodeTrav: codeTrav,
+    Unite: this.nouvelleUnite,
+    Quantite: Number(this.nouvelleQuantite),
+    Pu: 0,
+    Montant: 0
   });
 
-  // --- Calcul du total général ---
-  const totalGeneral = this.bdeAvecTravaux.reduce((acc, bde) => acc + this.Montant(bde.designations), 0);
+  // Reset
+  this.nouveauLotId = null;
+  this.nouveauTravauId = null;
+  this.nouvelleUnite = '';
+  this.nouvelleQuantite = null;
 
-  // Ligne finale : TOTAL GÉNÉRAL
-  body.push([
-    "",
-    { content: "TOTAL GÉNÉRAL", colSpan: 4, styles: { halign: "right", fillColor: [52, 58, 64], textColor: [255, 255, 255], fontStyle: "bold" } },
-    { content: `${this.formatQte(totalGeneral).replace(/\s/g, " ")} Ar`, styles: { fillColor: [52, 58, 64], textColor: [255, 255, 255], fontStyle: "bold" } }
-  ]);
-
-  // --- Génération du tableau ---
-  autoTable(doc, {
-    head: [["N°", "DESIGNATION", "U", "QUANTITE", "PRIX UNITAIRE", "MONTANT"]],
-    body: body,
-    startY: 25,
-    theme: "grid",
-    styles: { fontSize: 9, cellPadding: 2,textColor: [0, 0, 0] },
-    headStyles: { fillColor: [52, 58, 64],textColor: [255, 255, 255] },
-  });
-
-  // --- Sauvegarde du PDF ---
-  doc.save("bde.pdf");
-
+  await this.ListeBde();
+  this.toastMessage = "BDE ajouté avec succès !";
+  setTimeout(() => this.toastMessage = '', 2500);
 },
 
 
 
+    formatQte(val) { return val === null || val === undefined || isNaN(val) ? '0,00' : Number(val).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); },
+    formatPrice(val) { return Number(val).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); },
+    Montant(travaux) { return travaux.reduce((total, item) => total + item.Quantite * item.Pu, 0); },
+    totalGeneral() { return this.bdeAvecTravaux.reduce((total, bde) => total + this.Montant(bde.travaux), 0); },
 
-    // Affichage modales
-    Affichage() { this.afficherModale = !this.afficherModale; },
-    AffichageModaleDesignation() { this.DesignationModale = !this.DesignationModale; },
-
-    // Listes
-    async ListeBde() {
-      const BdeList = await db.bde.toArray();
-      const resultat = [];
-
-      for (const bde of BdeList) {
-        const trav = await db.Travaux.get(bde.CodeTrav);
-        const des = await db.designation.get(bde.CodeDes);
-
-        let existingTrav = resultat.find(item => item.nomTravaux === trav.travaux);
-        if (!existingTrav) {
-          existingTrav = { nomTravaux: trav.travaux, idTravaux: trav.CodeTrav, designations: [] };
-          resultat.push(existingTrav);
-        }
-
-        existingTrav.designations.push({
-          CodeDes: des.CodeDes,
-          nomDesignation: des.Designation,
-          nomDescription: des.Description,
-          Unite: bde.Unite,
-          Quantite: Number(bde.Quantite) || 0,
-          Pu: Number(bde.Pu) || 0,
-          Montant: Number(bde.Montant) || 0
-        });
-      }
-
-      this.bdeAvecTravaux = resultat;
-    },
-
-    async ListeProjets() { this.ProjetList = await db.Devis.toArray(); this.chargement = false; },
-    async ListeTravaux() { this.TravauxList = await db.Travaux.toArray(); },
-    async ListeDesignation() { this.DesignationList = await db.designation.toArray(); },
-
-    // Conversion en chiffres romains simplifié
     toRoman(num) {
       const roman = ["", "O", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
       return roman[num] || num;
@@ -718,25 +556,22 @@ export default {
 </script>
 
 <style scoped>
-/* Modales et toast notifications */
-.bloc-modale { position: fixed; top: 0; bottom: 0; left: 0; right: 0; display: flex; justify-content: center; align-items: center; z-index: 9999; }
-.overlay { background: rgba(0, 0, 0, 0.1); position: fixed; top: 0; bottom: 0; left: 0; right: 0; backdrop-filter: blur(1px); z-index: 9998; }
-.modale { background: linear-gradient(200deg,#02303065,#557497,#00bbd49a); color: #333; padding: 50px; position: fixed; z-index: 10000; }
-.btn-modale { position: absolute; top: 10px; right: 10px; }
-.styleTexte { font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; color:white; text-align: center; }
-
+.table { border-collapse: collapse; border: 0px solid black;font-size: small; }
+th, td { padding: 8px; border: 0px solid #00000085; }
+.sdp-table thead th { background: rgba(65, 80, 180, 0.87); color: white; text-align: center; }
+.styleN { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
 .toast-notification {
-  position: fixed; top: 20px; right: 20px; background-color: #4caf50; color: white;
+  position: fixed; top: 50px; right: 20px; background-color: #4caf50; color: white;
   padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   font-weight: bold; animation: fadein 0.3s, fadeout 0.5s 1.5s; z-index: 9999;
 }
 @keyframes fadein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeout { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); } }
 
-.table { border-collapse: collapse; border: 0px solid black; }
-th, td,tr { padding: 8px; border: 0px solid #00000085; }
-.sdp-table thead th { background:rgba(65, 80, 180, 0.87); color: white; text-align: center; }
-.styleN { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+/* STYLE MODIF LOT */
+.bloc-modale { position: fixed; top: 0; bottom: 0; left: 0; right: 0; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+.overlay { background: rgba(0, 0, 0, 0.1); position: fixed; top: 0; bottom: 0; left: 0; right: 0; backdrop-filter: blur(1px); z-index: 9998; }
+.modale { background: linear-gradient(200deg,#02303065,#557497,#00bbd49a); color: #333; padding: 50px; position: fixed; z-index: 10000; }
+.btn-modale { position: absolute; top: 10px; right: 10px; }
 
 </style>
-

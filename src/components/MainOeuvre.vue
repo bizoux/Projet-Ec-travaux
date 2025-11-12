@@ -5,9 +5,9 @@
     <!-- Titre principal -->
 
     <div class="card shadow border-0 rounded-4 mb-4 p-4 text-center" style="background:linear-gradient(230deg,#ffffff83,#ffffff27,#00000023);">
-      <h2 class="fw-bold text-primary mb-2" style="font-family: 'MaRaleway', sans-serif;">
+      <h4 class="fw-bold text-primary mb-2" style="font-family: 'MaRaleway', sans-serif;">
         Tarif de la Main d'Oeuvre
-      </h2>
+      </h4>
       <p class="fw-semibold" style="color:rgb(214, 117, 148);font-family: 'MaRoboto', sans-serif;">Calcul des prix moyens de la journée par catégorie</p>
     </div>
 
@@ -246,7 +246,7 @@ export default {
 
       Recherche:'',
       PageActuel:1,
-      NbrParPage:5,
+      NbrParPage:3,
 
       salaires: [
         { classification: "M.1", indice: 995, horaire: 366.16, journalier: 2929.28, mensuel: 81609.74 },

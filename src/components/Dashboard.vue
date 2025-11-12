@@ -1,102 +1,67 @@
 <template>
-  <div class="fond">
-    <div class="d-flex justify-content-center pa-5 gap-2">
-      <v-avatar color="info">
-        <v-img :src="profil" alt="Profil"></v-img>
-      </v-avatar>
-      <h4 style="font-family: 'MaRaleway', sans-serif;color:rgb(64, 67, 82);padding: 5px;">
-        Bonjour <strong>{{ displayName }}</strong>
-      </h4>
-    </div>
-
-    <div class="row pa-6">
-      <!-- Projet -->
-      <div class="col-md-4">
-        <v-card max-width="368" style="background:linear-gradient(200deg,#0a6dcf31,#0c6fe923,#45a1f875);">
-          <v-card-item title="Projet">
-            <template v-slot:subtitle>
-              <v-icon class="me-1 pb-1" color="error" icon="mdi-folder-open-outline" size="18" />
-              EC TRAVAUX
-            </template>
-          </v-card-item>
-
-          <v-card-text class="py-0">
-            <v-row align="center" no-gutters>
-              <v-col class="text-h2" cols="6">
-                {{ displayProjet }}
-              </v-col>
-              <v-col class="text-right" cols="6">
-                <v-icon color="success" icon="mdi-folder-open-outline" size="88" />
-              </v-col>
-            </v-row>
-          </v-card-text>
-
-          <v-divider />
-
-          <v-card-actions class="d-flex justify-content-end">
-            <v-btn variant="flat" color="primary" class="text-none" prepend-icon="mdi-open-in-new">Voir</v-btn>
-          </v-card-actions>
-        </v-card>
+  <div class="dashboard fill-height" style="background: linear-gradient(180deg, #eaf3ff, #f6fbff);">
+    <!-- En-tête avec profil -->
+    <header class="header d-flex align-items-center justify-content-between p-4">
+      <div class="d-flex align-items-center gap-3">
+        <v-avatar size="60" class="shadow-sm">
+          <v-img :src="profil" alt="Profil"></v-img>
+        </v-avatar>
+        <div>
+          <h4 class="fw-bold mb-1 text-primary">Bonjour 👋, {{ displayName }}</h4>
+          <p class="text-muted mb-0 small">Bienvenue sur votre tableau de bord</p>
+        </div>
       </div>
+      <v-btn color="primary" variant="tonal" prepend-icon="mdi-logout" @click="logout">
+        Déconnexion
+      </v-btn>
+    </header>
 
-      <!-- Désignation -->
-      <div class="col-md-4">
-        <v-card max-width="368" style="background:linear-gradient(200deg,#91e7d931,#5eb5bb23,#59d8d875);">
-          <v-card-item title="Désignation">
-            <template v-slot:subtitle>
-              <v-icon class="me-1 pb-1" color="error" icon="mdi-factory" size="18" />
-              EC TRAVAUX
-            </template>
-          </v-card-item>
+    <!-- Contenu principal -->
+    <main class="container py-5">
+      <div class="row gy-4">
+        <!-- Carte projet -->
+        <div
+          v-for="(item, i) in cards"
+          :key="i"
+          class="col-md-4"
+          @mouseenter="hoverCard(i, true)"
+          @mouseleave="hoverCard(i, false)"
+        >
+          <v-card
+            class="rounded-4 card-hover"
+            :elevation="item.hover ? 12 : 4"
+            :style="{ background: item.bg }"
+          >
+            <v-card-item>
+              <v-card-title class="fw-bold text-dark">{{ item.title }}</v-card-title>
+              <v-card-subtitle class="d-flex align-items-center">
+                <v-icon class="me-2" :color="item.iconColor" :icon="item.icon" size="20" />
+                {{ item.subtitle }}
+              </v-card-subtitle>
+            </v-card-item>
 
-          <v-card-text class="py-0">
-            <v-row align="center" no-gutters>
-              <v-col class="text-h2" cols="6">
-                {{ displayDesignation }}
-              </v-col>
-              <v-col class="text-right" cols="6">
-                <v-icon color="success" icon="mdi-factory" size="88" />
-              </v-col>
-            </v-row>
-          </v-card-text>
+            <v-card-text class="py-4">
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="display-number">{{ item.displayValue }}</span>
+                <v-icon :icon="item.icon" :color="item.iconColor" size="64" />
+              </div>
+            </v-card-text>
 
-          <v-divider />
-
-          <v-card-actions class="d-flex justify-content-end">
-            <v-btn variant="flat" color="primary" class="text-none" prepend-icon="mdi-open-in-new" @click="goToDesignation">Voir</v-btn>
-          </v-card-actions>
-        </v-card>
+            <v-card-actions class="justify-content-end">
+              <v-btn
+                variant="tonal"
+                color="primary"
+                prepend-icon="mdi-open-in-new"
+                class="text-none"
+                @click="router.push(item.route)"
+              >
+                Voir
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </div>
       </div>
-
-      <!-- Travaux -->
-      <div class="col-md-4">
-        <v-card max-width="368" style="background:linear-gradient(200deg,#41ad5c31,#0bc9801f,#98ebb175);">
-          <v-card-item title="Travaux">
-            <template v-slot:subtitle>
-              <v-icon class="me-1 pb-1" color="error" icon="mdi-hammer" size="18" />
-              EC TRAVAUX
-            </template>
-          </v-card-item>
-
-          <v-card-text class="py-0">
-            <v-row align="center" no-gutters>
-              <v-col class="text-h2" cols="6">
-                {{ displayTravaux }}
-              </v-col>
-              <v-col class="text-right" cols="6">
-                <v-icon color="success" icon="mdi-hammer" size="88" />
-              </v-col>
-            </v-row>
-          </v-card-text>
-
-          <v-divider />
-
-          <v-card-actions class="d-flex justify-content-end">
-            <v-btn variant="flat" color="primary" class="text-none" prepend-icon="mdi-open-in-new">Voir</v-btn>
-          </v-card-actions>
-        </v-card>
-      </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -109,72 +74,140 @@ import profil from "@/assets/user.png";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-const user = ref(null);
 const displayName = ref("Invité");
 
-// Valeurs réelles
-const totalProjet = ref(0);
-const totalTravaux = ref(0);
-const totalDesignation = ref(0);
+// --- Données principales ---
+const cards = ref([
+  {
+    title: "Projet",
+    subtitle: "EC TRAVAUX",
+    icon: "mdi-folder-open-outline",
+    iconColor: "info",
+    bg: "linear-gradient(135deg, #007bff1a, #00c4ff2a, #6ec1ff40)",
+    total: 0,
+    displayValue: 0,
+    route: "/Projet_existant",
+    hover: false,
+  },
+  {
+    title: "Travaux",
+    subtitle: "EC TRAVAUX",
+    icon: "mdi-factory",
+    iconColor: "success",
+    bg: "linear-gradient(135deg, #42ba9620, #8debd930, #b1f5d745)",
+    total: 0,
+    displayValue: 0,
+    route: "/Designation",
+    hover: false,
+  },
+  {
+    title: "Lot",
+    subtitle: "EC TRAVAUX",
+    icon: "mdi-hammer",
+    iconColor: "warning",
+    bg: "linear-gradient(135deg, #f1c40f22, #ffdd5720, #ffefba45)",
+    total: 0,
+    displayValue: 0,
+    route: "/Travaux",
+    hover: false,
+  },
+]);
 
-// Valeurs animées affichées
-const displayProjet = ref(0);
-const displayTravaux = ref(0);
-const displayDesignation = ref(0);
-
-// Fonction d’animation fluide
-function animateValue(displayRef, newValue) {
-  gsap.to(displayRef, {
-    duration: 0.6,
-    value: newValue,
+// Animation fluide du compteur
+function animateValue(item, newValue) {
+  gsap.to(item, {
+    duration: 0.8,
+    displayValue: newValue,
+    roundProps: "displayValue",
     ease: "power2.out",
-    onUpdate: () => {
-      displayRef.value = Math.floor(displayRef.value);
-    },
   });
 }
 
-function goToDesignation() {
-  router.push("/Designation");
+function hoverCard(index, isHover) {
+  cards.value[index].hover = isHover;
+  gsap.to(`.col-md-4:nth-child(${index + 1})`, {
+    scale: isHover ? 1.03 : 1,
+    duration: 0.3,
+    ease: "power1.out",
+  });
 }
 
-onMounted(async () => {
-  totalProjet.value = await db.Devis.count();
-  totalTravaux.value = await db.Travaux.count();
-  totalDesignation.value = await db.designation.count();
+async function logout() {
+  await supabase.auth.signOut();
+  router.push("/login");
+}
 
-  // Animation des trois nombres
-  animateValue(displayProjet, totalProjet.value);
-  animateValue(displayTravaux, totalTravaux.value);
-  animateValue(displayDesignation, totalDesignation.value);
+// Chargement des données
+onMounted(async () => {
+  const [projet, travaux, designation] = await Promise.all([
+    db.Projet.count(),
+    db.Lot.count(),
+    db.Travaux.count(),
+  ]);
+
+  cards.value[0].total = projet;
+  cards.value[1].total = designation;
+  cards.value[2].total = travaux;
+
+  cards.value.forEach((item) => animateValue(item, item.total));
 
   if (navigator.onLine) {
-    const { data: { user: currentUser } } = await supabase.auth.getUser();
-    user.value = currentUser;
-    if (user.value) {
-      displayName.value = user.value.user_metadata?.display_name || "RAKOTO";
+      //  En ligne → récupérer depuis Supabase
+  
+      const { data: { user: currentUser } } = await supabase.auth.getUser()
+      user.value = currentUser
+  
+      if (user.value) {
+  
+        displayName.value = user.value.user_metadata?.display_name || 'RAKOTO'
+      
+      }
+    } else {
+      // Hors ligne → récupérer depuis Dexie (Session)
+  
+      const session = await db.Session.get(1)
+      if (session) {
+  
+        displayName.value = session.displayName || 'Invité'
+  
+      }
     }
-  } else {
-    const session = await db.Session.get(1);
-    if (session) {
-      displayName.value = session.displayName || "Invité";
-    }
-  }
+
+
 });
 </script>
 
 <style scoped>
-.fond {
-  background: linear-gradient(300deg, #1a808d31, #aac6dd, #356e9c2a);
+/* .dashboard {
   min-height: 100vh;
+  background: linear-gradient(180deg, #eaf3ff, #f6fbff);
   display: flex;
   flex-direction: column;
+} */
+
+.header {
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.text-h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #3b3b3b;
+.card-hover {
   transition: all 0.3s ease;
+  border-radius: 20px !important;
+  cursor: pointer;
+}
+
+.display-number {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #2b2b2b;
+}
+
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.text-muted {
+  color: #6c757d;
 }
 </style>

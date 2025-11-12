@@ -1,0 +1,181 @@
+<template>
+  <div class="chat-container">
+    <div class="chat-messages" ref="chatMessages">
+      <div
+        v-for="(msg, index) in messages"
+        :key="index"
+        :class="['chat-message', msg.sender]"
+        v-html="msg.content"
+      ></div>
+    </div>
+
+    <div class="chat-input">
+      <input
+        v-model="message"
+        @keyup.enter="sendMessage"
+        placeholder="Pose ta question BTP..."
+      />
+      <button @click="sendMessage">Envoyer</button>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      message: "",
+      messages: [],
+    };
+  },
+  methods: {
+    async sendMessage() {
+      if (!this.message.trim()) return;
+
+      this.messages.push({ sender: "user", content: this.message });
+      const userMessage = this.message;
+      this.message = "";
+
+      this.$nextTick(() => this.scrollToBottom());
+
+      // ✅ Prompt amélioré : résultat en gras
+      const botPrompt = `
+Vous êtes **un expert en BTP**, spécialisé en **maçonnerie** et en **quantités de matériaux**.
+Quand on vous indique un type de maçonnerie (exemples : *maçonnerie de brique*, *maçonnerie de moellon*, *maçonnerie de parpaing*),
+répondez **de manière technique et concise** selon le format suivant :
+
+ **Quantité par m² :** **(valeur en gras)**  
+ **Matériaux nécessaires pour 1 m² :**  
+   - **Ciment :** ... kg  
+   - **Sable :** ... m³  
+   - **Eau :** ... L  
+   - **Autres :**...
+
+⚙️ Règles :
+- Les valeurs ou résultats (quantités, mesures, types) doivent toujours être en **gras**.
+- Aucune phrase d’introduction, explication ou phrase de politesse.
+- La réponse doit être en HTML simple avec les balises <b>...</b> pour le gras.
+`;
+
+      try {
+        const res = await axios.post(
+          "https://api.mistral.ai/v1/chat/completions",
+          {
+            model: "mistral-large-2411",
+            messages: [
+              { role: "system", content: botPrompt },
+              { role: "user", content: userMessage },
+            ],
+          },
+          {
+            headers: {
+              Authorization: `Bearer i0MeewyZ1K7hFXLbkJtTPbxZ8t35MQOb`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        let botReply =
+          res.data.choices?.[0]?.message?.content || "Pas de réponse";
+
+        // ✅ Transformation de markdown en gras HTML si besoin
+        botReply = botReply.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+
+        this.messages.push({ sender: "bot", content: botReply });
+        this.$nextTick(() => this.scrollToBottom());
+      } catch (err) {
+        console.error("Erreur Mistral :", err.response?.data || err.message);
+        this.messages.push({
+          sender: "bot",
+          content: "<b>Erreur serveur</b>",
+        });
+      }
+    },
+    scrollToBottom() {
+      const container = this.$refs.chatMessages;
+      container.scrollTop = container.scrollHeight;
+    },
+  },
+};
+</script>
+
+<style scoped>
+.chat-container {
+  width: 400px;
+  max-width: 100%;
+  height: 500px;
+  border: 2px solid #4a90e2;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  background-color: #f7f9fc;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-message {
+  max-width: 80%;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  background-color: #4a90e2;
+  color: white;
+}
+
+.chat-message.bot {
+  align-self: flex-start;
+  background-color: #e5e5ea;
+  color: black;
+}
+
+.chat-message.bot b {
+  font-weight: bold;
+  color: #000;
+}
+
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ccc;
+  padding: 8px;
+  background-color: #fff;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.chat-input button {
+  margin-left: 8px;
+  padding: 8px 16px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.chat-input button:hover {
+  background-color: #357ab8;
+}
+</style>

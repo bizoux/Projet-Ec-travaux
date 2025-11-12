@@ -3,10 +3,10 @@ import db from '@/db';
 
 export async function syncToSupabase() {
   try {
-    const devis = await db.Devis.toArray();
-      for (const dev of devis) {
-        await supabase.from('devis').upsert(dev, {
-          onConflict: ['idDevis']
+    const projet = await db.Projet.toArray();
+      for (const proj of projet) {
+        await supabase.from('Projet').upsert(proj, {
+          onConflict: ['idProj']
         });
       }
   } catch (err) {
@@ -16,11 +16,11 @@ export async function syncToSupabase() {
 
 
 export async function syncFromSupabase() {
-  const { data, error } = await supabase.from('devis').select('*');
+  const { data, error } = await supabase.from('Projet').select('*');
   if (error) return console.error('Erreur Supabase:', error);
 
-  for (const dev of data) {
-    await db.Devis.put(dev);
+  for (const proj of data) {
+    await db.Projet.put(proj);
   }
   
 if (error) {
@@ -30,13 +30,13 @@ if (error) {
 
 export function listenToSupabaseUpdates() {
   supabase
-    .channel('realtime:devis')
+    .channel('realtime:Projet')
     .on('postgres_changes', {
       event: '*',
       schema: 'public',
-      table: 'devis'
+      table: 'Projet'
     }, async (payload) => {
-      await db.Devis.put(payload.new);
+      await db.Projet.put(payload.new);
     })
     .subscribe();
 }

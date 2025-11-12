@@ -43,28 +43,10 @@
 
       <v-list-item to="/Accueil_Ec_travaux" prepend-icon="mdi-home-outline" title="Accueil" rounded="shaped" exact/>
       
-      <v-list-item to="/Designation" prepend-icon="mdi-clipboard-list-outline" title="Désignation" rounded="shaped"/>
-
-          <v-list-group prepend-icon="mdi-file-document-outline" title="Génération de dévis">
-            <template #activator="{ props: activatorProps }">
-              <v-list-item v-bind="activatorProps"/>
-            </template>
-
-            <v-list-item
-              to="/Projet_existant"
-              prepend-icon="mdi-folder-open-outline"
-              title="Gérer un projet existant"
-              rounded="shaped"
-            />
-            <v-list-item
-              to="/NouveauProjet"
-              prepend-icon="mdi-folder-plus-outline"
-              title="Créer un nouveau projet"
-              rounded="shaped"
-            />
-
-          </v-list-group>
-                  
+      <!-- <v-list-item to="/Projets" prepend-icon="mdi-domain" title="Projets" rounded="shaped"/> -->
+      
+      <v-list-item to="/Projets" :active="route.path.startsWith('/Projets') || route.path.startsWith('/NouveauProjet')|| route.path.startsWith('/Nouveau_projet')|| route.path.startsWith('/Projet_existant')"  prepend-icon="mdi-domain" title="Projets" rounded="shaped"/>
+               
 
     </v-list>
 

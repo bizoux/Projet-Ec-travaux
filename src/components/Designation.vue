@@ -1,5 +1,12 @@
 <template>
-<div class="fond">  
+<div class="fond"> 
+  <div v-if="projet">
+    <h2>{{projet.NomMaitreOuvr}}</h2>
+    <p>{{projet.Entreprise}}</p>
+  </div>
+  
+
+
   <div class="container my-4">
     <v-expansion-panels class="pa-10 policeForm">
       <v-expansion-panel>
@@ -109,11 +116,13 @@
 <script>
 import { ref, onMounted, watch, getCurrentInstance } from 'vue'
 import db from '@/db'
+ import { useRoute } from 'vue-router'
 
 export default {
   name: 'Designation',
   setup() {
     const form = ref()
+    const projet = ref(null)
     const designation = ref('')
     const description = ref('')
     const { proxy } = getCurrentInstance()
@@ -123,6 +132,7 @@ export default {
     const ListeDesignations = ref([]);
     const idEnCours = ref(null);
     const modeEdition = ref(false);
+    const route = useRoute()
     
     const headers = ref([ 
       { title: "CodeDes", key: "CodeDes", align: "start" }, 
@@ -336,6 +346,7 @@ console.error("Erreur lors de la suppression :", error);
     onMounted(async () => {
 
       await loadItems();
+      
 
     });
 

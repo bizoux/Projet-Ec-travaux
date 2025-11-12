@@ -3,9 +3,9 @@
 
     <!-- Titre principal -->
     <div class="card shadow border-0 rounded-4 mb-4 p-4 text-center" style="background:linear-gradient(230deg,#ffffff83,#ffffff27,#00000023);">
-      <h2 class="fw-bold text-primary mb-2" style="font-family: 'MaRaleway', sans-serif;">
+      <h4 class="fw-bold text-primary mb-2" style="font-family: 'MaRaleway', sans-serif;">
         Tarif de location matériels et Outillages en vue de leur amortissement
-      </h2>
+      </h4>
       <p class="fw-semibold" style="color:rgb(214, 117, 148);font-family: 'MaRoboto', sans-serif;">( Inclut chauffeur ou machiniste )</p>
     </div>
 
@@ -221,8 +221,8 @@ title: "Etes vous sure de vouloir supprimer le materiel " + materiels + " ?",
 text: "Cette action est irréversible !",
 icon: 'warning',
 showCancelButton: true,
-confirmButtonColor: '#d33',
-cancelButtonColor: '#3085d6',
+confirmButtonColor: '#3085d6',
+cancelButtonColor: '#d33',
 confirmButtonText: 'Oui',
 cancelButtonText: 'Annuler',
 didOpen: () => {
